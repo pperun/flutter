@@ -29,10 +29,10 @@ class HomePage extends StatelessWidget {
       body: ListView.builder(
         itemCount: items.length,
         itemBuilder: (context, index) {
-          return ExpansionTile(
+          return ListTile(
             title: items[index].title(context),
             subtitle: items[index].subtitle(context),
-            children: [items[index].details(context)],
+            //children: [items[index].details(context)],
           );
         },
       ),
