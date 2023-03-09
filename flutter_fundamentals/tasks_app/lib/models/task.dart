@@ -1,11 +1,10 @@
-import 'package:uuid/uuid.dart';
+import 'package:tasks_app/models/unique_identifier.dart';
 
-class Task {
-  final String id = const Uuid().v1();
+class Task with UniqueIdentifier {
   final String name;
   late bool completed;
 
-  Task({required this.name, this.completed = false}) : assert(name.isNotEmpty);
+  Task({this.name = "Unknown", this.completed = false}) : assert(name.isNotEmpty);
 
   Task.fromJson(Map<String, dynamic> json) : name = json['name'], completed = json['completed'];
 

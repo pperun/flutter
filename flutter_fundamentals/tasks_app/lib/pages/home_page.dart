@@ -11,42 +11,45 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Task> data = [];
+  late Map<Task, Set<Task>> data;
   final controller = TextEditingController();
+  bool addTask = false;
+  Function getDate(int year) => (int month) => (int day) => '$day.$month.$year'; 
+
+  @override
+  void initState() {
+    super.initState();
+    data = {};
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ToDoDo'),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+          const Text('ToDoDo'),
+          Text(getDate(DateTime.now().year)(DateTime.now().month)(DateTime.now().day))
+        ],
+      ),
       ),
       body: Column(
         children: [
           Expanded(
-            child: ReorderableListView.builder(
+            child: ListView.builder(
               itemCount: data.length,
               itemBuilder: (context, index) {
                 return TaskTile(
-                  key: ValueKey(data[index].id),
-                  task: data[index],
-                  onChanged: (value) {
-                    setState(() {
-                      data[index].completed = !data[index].completed;
-                    });
-                  },
+                  key: ValueKey(data.keys.elementAt(index).id),
+                  task: data.keys.elementAt(index),
+                  subtasks: data[data.keys.elementAt(index)]?.toList() ?? [],
                   onDismissed: (direction) {
                     setState(() {
-                      data.removeAt(index);
+                      data.remove(data.keys.elementAt(index));
                     });
                   },
                 );
-              },
-              onReorder: (oldIndex, newIndex) {
-                setState(() {
-                  oldIndex < newIndex
-                      ? data.insert(--newIndex, data.removeAt(oldIndex))
-                      : data.insert(newIndex, data.removeAt(oldIndex));
-                });
               },
             ),
           ),
@@ -55,7 +58,7 @@ class _HomePageState extends State<HomePage> {
             onSubmitted: (text) {
               setState(() {
                 if (text.isNotEmpty) {
-                  data.add(Task(name: text));
+                  data.putIfAbsent(Task(name: text), () => <Task>{});
                 }
                 controller.clear();
               });
