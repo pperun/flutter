@@ -18,7 +18,7 @@ class StoryWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Flexible(
+          Expanded(
               child: UserIcon(
             user: user,
             seen: seen,

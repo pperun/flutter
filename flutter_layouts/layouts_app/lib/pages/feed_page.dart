@@ -61,7 +61,7 @@ class _MyHomePageState extends State<FeedPage> {
               ),
               child: ListView.separated(
                 padding: const EdgeInsets.only(
-                    top: 0, bottom: 0, left: 14, right: 14),
+                    top: 10, bottom: 10, left: 14, right: 14),
                 scrollDirection: Axis.horizontal,
                 itemCount: users.length,
                 itemBuilder: (context, index) =>
