@@ -18,8 +18,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final WeatherApiClient client = WeatherApiClient();
   final PageController controller = PageController();
-  late final Forecast forecast;
   int pageIndex = 0;
+  late final Future<Forecast> forecast;
+
+  @override
+  void initState() {
+    super.initState();
+    forecast = client.getForecast();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +37,6 @@ class _HomePageState extends State<HomePage> {
           title: Text('Weather', style: Theme.of(context).textTheme.titleLarge),
         ),
         body: SafeArea(
-          maintainBottomViewPadding: false,
           child: FutureBuilder(
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -52,11 +57,10 @@ class _HomePageState extends State<HomePage> {
                 );
               }
             },
-            future: client.getForecast(),
+            future: forecast,
           ),
         ),
         bottomNavigationBar: GlassBottomNavigationBar(
-          blur: 25,
           currentIndex: pageIndex,
           onTap: (value) {
             if (value != pageIndex) {

@@ -12,7 +12,6 @@ class GlassWeatherSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassPanel(
-      blur: 25,
       borderRadius: const BorderRadius.all(Radius.circular(20)),
       padding: const EdgeInsets.all(10),
       child: Column(

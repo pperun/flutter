@@ -1,9 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 class GlassPanel extends StatelessWidget {
-  final double blur;
   final BorderRadiusGeometry borderRadius;
   final EdgeInsetsGeometry? padding;
   final List<Color> glassGradientColors;
@@ -11,7 +8,6 @@ class GlassPanel extends StatelessWidget {
 
   const GlassPanel(
       {super.key,
-      this.blur = 0,
       this.padding,
       BorderRadiusGeometry? borderRadius,
       List<Color>? glassGradientColors,
@@ -25,8 +21,6 @@ class GlassPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: borderRadius,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -38,7 +32,6 @@ class GlassPanel extends StatelessWidget {
           ),
           padding: padding,
           child: child,
-        ),
       ),
     );
   }
