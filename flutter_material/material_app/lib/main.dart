@@ -14,10 +14,11 @@ class WeatherApp extends StatelessWidget {
     return MaterialApp(
       title: 'Weather',
       theme: ThemeData(
+        iconTheme: const IconThemeData(color: Colors.white70),
         textTheme: const TextTheme(
-          displayLarge: TextStyle(fontSize: 48.0),
-          titleLarge: TextStyle(fontSize: 24.0),
-          bodyMedium: TextStyle(fontSize: 16.0),
+          displayLarge: TextStyle(color: Colors.white, fontSize: 48.0),
+          titleLarge: TextStyle(color: Colors.white, fontSize: 24.0),
+          bodyMedium: TextStyle(color: Colors.white, fontSize: 16.0),
         ),
         primarySwatch: Swatches.blueSwatch,
       ),
