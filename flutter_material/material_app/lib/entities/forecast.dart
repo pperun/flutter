@@ -1,8 +1,10 @@
-import 'package:material_app/models/forecast_day.dart';
-import 'package:material_app/models/hourly_weather.dart';
-import 'package:material_app/models/location.dart';
-import 'package:material_app/models/weather.dart';
-import 'package:material_app/models/weather_condition.dart';
+import 'package:intl/intl.dart';
+import 'package:material_app/entities/astronomic_data.dart';
+import 'package:material_app/entities/forecast_day.dart';
+import 'package:material_app/entities/hourly_weather.dart';
+import 'package:material_app/entities/location.dart';
+import 'package:material_app/entities/weather.dart';
+import 'package:material_app/entities/weather_condition.dart';
 
 class Forecast {
   List<ForecastDay> days;
@@ -32,7 +34,13 @@ class Forecast {
                     pressure: hour['pressure_mb'],
                     humidity: hour['humidity'],
                     rainChance: hour['chance_of_rain'])
-            ])
+            ],
+            astro: AstronomicData(
+                sunrise: DateFormat('yyyy-MM-dd hh:mm aaa').parse('${day['date']} ${day['astro']['sunrise']}'),
+                sunset: DateFormat('yyyy-MM-dd hh:mm aaa').parse('${day['date']} ${day['astro']['sunset']}'),
+                moonrise: DateFormat('yyyy-MM-dd hh:mm aaa').parse('${day['date']} ${day['astro']['moonrise']}'),
+                moonset: DateFormat('yyyy-MM-dd hh:mm aaa').parse('${day['date']} ${day['astro']['moonset']}'),
+                moonPhase: day['astro']['moon_phase']))
     ]);
   }
 }

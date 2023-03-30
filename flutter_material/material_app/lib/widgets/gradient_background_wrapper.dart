@@ -19,5 +19,4 @@ class GradientBackgroundWrapper extends StatelessWidget {
       child: child,
     );
   }
-
 }

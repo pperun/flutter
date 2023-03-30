@@ -4,7 +4,7 @@ import 'package:material_app/pages/forecast_page.dart';
 import 'package:material_app/widgets/glass_app_bar.dart';
 import 'package:material_app/widgets/gradient_background_wrapper.dart';
 
-import '../models/forecast.dart';
+import '../entities/forecast.dart';
 import '../widgets/glass_bottom_navigation_bar.dart';
 import 'forecast_day_page.dart';
 
@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
               setState(() {
                 controller.animateToPage(pageIndex,
                     duration: const Duration(milliseconds: 300),
-                    curve: Curves.linear);
+                    curve: Curves.easeOut);
               });
             }
           },

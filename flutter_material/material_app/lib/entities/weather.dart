@@ -1,5 +1,5 @@
-import 'package:material_app/models/location.dart';
-import 'package:material_app/models/weather_condition.dart';
+import 'package:material_app/entities/location.dart';
+import 'package:material_app/entities/weather_condition.dart';
 
 class Weather {
   final Location location;

@@ -1,4 +1,4 @@
-import 'package:material_app/models/weather_condition.dart';
+import 'package:material_app/entities/weather_condition.dart';
 
 class HourlyWeather {
   final DateTime time;

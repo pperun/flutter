@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:material_app/widgets/glass_panel.dart';
+import '../entities/weather.dart';
 
-import '../models/forecast_day.dart';
+class GlassWeatherMeteo extends StatelessWidget {
 
-class GlassWeatherSummary extends StatelessWidget {
-  final String id;
-  final ForecastDay weather;
-
-  const GlassWeatherSummary({super.key, this.id = '', required this.weather});
-
+  final Weather weather;
+  
+  const GlassWeatherMeteo({super.key, required this.weather});
+  
   @override
   Widget build(BuildContext context) {
     return GlassPanel(
-      borderRadius: const BorderRadius.all(Radius.circular(20)),
+      borderRadius: const BorderRadius.all(Radius.circular(10)),
       padding: const EdgeInsets.all(10),
       child: Column(
         children: [
-          Text(
-              '${weather.daySummary.date.day.toString().padLeft(2, '0')}.${weather.daySummary.date.month.toString().padLeft(2, '0')}.${weather.daySummary.date.year}'),
-          Image.network(weather.daySummary.condition.iconUrl,
+          Text(DateFormat('dd.MM.y').format(weather.date)),    
+          Image.network(weather.condition.iconUrl,
               width: 100, height: 100, scale: 0.5),
-          Text(weather.daySummary.condition.condition),
+          Text(weather.condition.condition),
           Text(
-              '${weather.daySummary.location.city}, ${weather.daySummary.location.region}, ${weather.daySummary.location.country}'),
+              '${weather.location.city}, ${weather.location.region}, ${weather.location.country}'),
           Container(
             padding: const EdgeInsets.only(top: 10),
             child: Row(
@@ -32,25 +31,25 @@ class GlassWeatherSummary extends StatelessWidget {
                   children: [
                     const Icon(Icons.thermostat_rounded),
                     Text(
-                        '${weather.daySummary.maxTemperature} / ${weather.daySummary.minTemperature} °C')
+                        '${weather.maxTemperature} / ${weather.minTemperature} °C')
                   ],
                 ),
                 Row(
                   children: [
                     const Icon(Icons.air),
-                    Text('${weather.daySummary.maxWindSpeed} KPH')
+                    Text('${weather.maxWindSpeed} KPH')
                   ],
                 ),
                 Row(
                   children: [
                     const Icon(Icons.water),
-                    Text('${weather.daySummary.averageHumidity} %')
+                    Text('${weather.averageHumidity} %')
                   ],
                 ),
                 Row(
                   children: [
                     const Icon(Icons.umbrella_outlined),
-                    Text('${weather.daySummary.rainChance} %')
+                    Text('${weather.rainChance} %')
                   ],
                 ),
               ],
