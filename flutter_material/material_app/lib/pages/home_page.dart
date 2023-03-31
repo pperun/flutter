@@ -1,31 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:material_app/http/weather_api_client.dart';
+import 'package:material_app/models/forecast_model.dart';
 import 'package:material_app/pages/forecast_page.dart';
 import 'package:material_app/widgets/glass_app_bar.dart';
 import 'package:material_app/widgets/gradient_background_wrapper.dart';
+import 'package:provider/provider.dart';
 
 import '../entities/forecast.dart';
+import '../models/page_view_model.dart';
 import '../widgets/glass_bottom_navigation_bar.dart';
 import 'forecast_day_page.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomePage extends StatelessWidget {
+  final PageController _controller = PageController();
 
-  @override
-  State<StatefulWidget> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  final WeatherApiClient client = WeatherApiClient();
-  final PageController controller = PageController();
-  int pageIndex = 0;
-  late final Future<Forecast> forecast;
-
-  @override
-  void initState() {
-    super.initState();
-    forecast = client.getForecast();
-  }
+  HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,15 +29,15 @@ class _HomePageState extends State<HomePage> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 Forecast forecast = snapshot.data as Forecast;
-                return PageView(
-                  controller: controller,
-                  onPageChanged: (value) => setState(() {
-                    pageIndex = value;
-                  }),
-                  children: [
-                    ForecastDayPage(weather: forecast.days[0]),
-                    ForecastPage(forecast: forecast),
-                  ],
+                return Consumer<PageViewModel>(
+                  builder: (context, model, child) => PageView(
+                    controller: _controller,
+                    onPageChanged: (value) => model.currentIndex = value,
+                    children: [
+                      ForecastDayPage(weather: forecast.days[0]),
+                      ForecastPage(forecast: forecast),
+                    ],
+                  ),
                 );
               } else {
                 return const Center(
@@ -57,35 +45,27 @@ class _HomePageState extends State<HomePage> {
                 );
               }
             },
-            future: forecast,
+            future: Provider.of<ForecastModel>(context).getForecast(),
           ),
         ),
-        bottomNavigationBar: GlassBottomNavigationBar(
-          currentIndex: pageIndex,
-          onTap: (value) {
-            if (value != pageIndex) {
-              pageIndex == 1 ? pageIndex = 0 : pageIndex++;
-              setState(() {
-                controller.animateToPage(pageIndex,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeOut);
-              });
-            }
-          },
-          items: const [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.today_rounded), label: 'Today'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.grid_on_rounded), label: 'Forecast'),
-          ],
+        bottomNavigationBar: Consumer<PageViewModel>(
+          builder: (context, model, child) => GlassBottomNavigationBar(
+            currentIndex: model.currentIndex,
+            onTap: (value) {
+              model.currentIndex = value;
+              _controller.animateToPage(value,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeIn);
+            },
+            items: const [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.today_rounded), label: 'Today'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.grid_on_rounded), label: 'Forecast'),
+            ],
+          ),
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
   }
 }

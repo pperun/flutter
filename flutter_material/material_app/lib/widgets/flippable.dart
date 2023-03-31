@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:material_app/models/flippable_model.dart';
+import 'package:provider/provider.dart';
 
-class Flippable extends StatefulWidget {
+class Flippable extends StatelessWidget {
   final Widget frontSide;
   final Widget backSide;
 
@@ -8,23 +10,14 @@ class Flippable extends StatefulWidget {
       {super.key, required this.frontSide, required this.backSide});
 
   @override
-  State<StatefulWidget> createState() => FlippableState();
-}
-
-class FlippableState extends State<Flippable> {
-  int _selectedWidget = 0;
-
-  @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => setState(() {
-        _selectedWidget = _selectedWidget == 0 ? 1 : 0;
-      }),
+      onTap: () => context.read<FlippableModel>().flip(),
       child: AnimatedSize(
         duration: const Duration(milliseconds: 200),
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
-          child: _selectedWidget == 0 ? widget.frontSide : widget.backSide,
+          child: context.watch<FlippableModel>().side == Side.front ? frontSide : backSide,
         ),
       ),
     );
