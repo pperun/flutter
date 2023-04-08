@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:material_app/models/tab_bar_model.dart';
+import 'package:material_app/providers/tab_bar_provider.dart';
 import 'package:material_app/pages/forecast_day_page.dart';
 import 'package:material_app/widgets/glass_tab_bar.dart';
 import 'package:provider/provider.dart';
@@ -18,13 +18,14 @@ class ForecastPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: forecast.days.length,
-      initialIndex: Provider.of<TabBarModel>(context).currentIndex,
+      initialIndex: Provider.of<TabBarProvider>(context).currentIndex,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           GlassTabBar(
             isScrollable: true,
-            labelPadding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+            labelPadding:
+                const EdgeInsets.only(left: 10, right: 10, bottom: 10),
             tabs: [
               for (ForecastDay day in forecast.days)
                 GlassPanel(

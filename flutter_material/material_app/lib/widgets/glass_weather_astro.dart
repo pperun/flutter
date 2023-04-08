@@ -22,7 +22,7 @@ class GlassWeatherAstro extends StatelessWidget {
               CustomPaint(
                 size: const Size(320, 200),
                 painter: ArcPainter(
-                  arcColor: Colors.white24,
+                  arcColor: Theme.of(context).primaryColor,
                   data: astro,
                   context: context,
                 ),
@@ -47,8 +47,8 @@ class GlassWeatherAstro extends StatelessWidget {
               ),
               Row(
                 children: [
-                  Text('${DateFormat.Hm().format(astro.moonrise)} - '
-                      '${DateFormat.Hm().format(astro.moonset)}'),
+                  Text('${astro.moonrise == null ? 'No moonrise' :  DateFormat.Hm().format(astro.moonrise!)} - '
+                      '${astro.moonset == null ? 'No moonrise' :  DateFormat.Hm().format(astro.moonset!)}'),
                   const Image(
                     image: AssetImage('assets/moon.png'),
                   ),

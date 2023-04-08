@@ -11,4 +11,22 @@ class ForecastDay {
       {required this.daySummary,
       required this.weatherByHours,
       required this.astro});
+
+  ForecastDay.fromJson(Map<String, dynamic> json)
+      : daySummary = Weather.fromJson(json),
+        weatherByHours = [
+          for (Map<String, dynamic> hour in json['hour'])
+            HourlyWeather.fromJson(hour)
+        ],
+        astro = AstronomicData.fromJson(json);
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> daySummaryJson = daySummary.toJson();
+    return {
+      'date': daySummaryJson['date'],
+      'day': daySummaryJson['day'],
+      'astro': astro.toJson(),
+      'hour': [for (HourlyWeather hour in weatherByHours) hour.toJson()]
+    };
+  }
 }

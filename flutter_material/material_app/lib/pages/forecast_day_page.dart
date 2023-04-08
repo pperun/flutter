@@ -9,7 +9,7 @@ import 'package:material_app/widgets/flippable.dart';
 import 'package:provider/provider.dart';
 
 import '../entities/forecast_day.dart';
-import '../models/flippable_model.dart';
+import '../providers/flippable_provider.dart';
 
 class ForecastDayPage extends StatelessWidget {
   final ForecastDay weather;
@@ -24,9 +24,9 @@ class ForecastDayPage extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(10),
-            child: ChangeNotifierProvider<FlippableModel>(
-              create: (context) => FlippableModel(),
-              child: Consumer<FlippableModel>(
+            child: ChangeNotifierProvider<FlippableProvider>(
+              create: (context) => FlippableProvider(),
+              child: Consumer<FlippableProvider>(
                 builder: (context, value, child) => Flippable(
                   frontSide: GlassWeatherMeteo(weather: weather.daySummary),
                   backSide: GlassWeatherAstro(astro: weather.astro),
@@ -43,9 +43,9 @@ class ForecastDayPage extends StatelessWidget {
                     in weather.weatherByHours)
                   Row(
                     children: [
-                      ChangeNotifierProvider<FlippableModel>(
-                        create: (context) => FlippableModel(),
-                        child: Consumer<FlippableModel>(
+                      ChangeNotifierProvider<FlippableProvider>(
+                        create: (context) => FlippableProvider(),
+                        child: Consumer<FlippableProvider>(
                           builder: (context, model, child) => Flippable(
                             frontSide: GlassHourlyWeatherSummary(
                               hourlyWeather: hourlyWeather,

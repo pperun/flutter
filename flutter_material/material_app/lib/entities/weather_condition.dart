@@ -4,7 +4,10 @@ class WeatherCondition {
 
   WeatherCondition({required this.condition, required this.iconUrl});
 
-  factory WeatherCondition.fromJson(Map<String, dynamic> json) {
-    return WeatherCondition(condition: json['text'], iconUrl: 'http:${json['icon']}');
-  }
+  WeatherCondition.fromJson(Map<String, dynamic> json)
+      : condition = json['text'],
+        iconUrl = 'http:${json['icon']}';
+
+  Map<String, dynamic> toJson() =>
+      {'text': condition, 'icon': iconUrl.replaceFirst(RegExp(r'http:'), '')};
 }

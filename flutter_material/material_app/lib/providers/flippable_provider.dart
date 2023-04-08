@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class FlippableModel with ChangeNotifier {
+class FlippableProvider with ChangeNotifier {
   Side side = Side.front;
 
   void flip() {

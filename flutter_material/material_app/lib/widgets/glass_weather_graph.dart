@@ -30,7 +30,7 @@ class GlassWeatherGraph extends StatelessWidget {
               height: 200.0,
               child: CustomPaint(
                 painter: GraphPainter(
-                  color: Colors.white24,
+                  color: Theme.of(context).primaryColor,
                   data: data,
                   context: context,
                 ),

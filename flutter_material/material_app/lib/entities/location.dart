@@ -5,11 +5,11 @@ class Location {
 
   Location({required this.city, required this.region, required this.country});
 
-  factory Location.fromJson(Map<String, dynamic> json) {
-    return Location(
-        city: json['name'], 
-        region: json['region'], 
-        country: json['country']
-        );
-  }
+  Location.fromJson(Map<String, dynamic> json)
+      : city = json['name'],
+        region = json['region'],
+        country = json['country'];
+
+  Map<String, dynamic> toJson() =>
+      {'name': city, 'region': region, 'country': country};
 }

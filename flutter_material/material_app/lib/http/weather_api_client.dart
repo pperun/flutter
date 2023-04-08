@@ -9,12 +9,18 @@ class WeatherApiClient {
   static Uri forecastUrl = Uri.http('api.weatherapi.com', '/v1/forecast.json',
       {'key': apiKey, 'q': city, 'days': '9', 'aqi': 'no'});
 
+  static Forecast parseJson(String responseBody) =>
+      Forecast.fromJson(jsonDecode(responseBody));
+
   static Future<Forecast> getForecast() async {
     Forecast forecast;
     var response = await http.get(forecastUrl);
-    response.statusCode == 200
-        ? forecast = Forecast.fromJson(jsonDecode(response.body))
-        : throw Exception('Fetch failed');
-    return forecast;    
+
+    if(response.statusCode == 200) {
+      forecast = parseJson(response.body);
+      return forecast;
+    }
+    
+    return Future.error(Exception('Fetch failed'));
   }
 }
