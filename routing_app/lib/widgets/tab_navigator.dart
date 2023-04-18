@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:routing_app/pages/colors_list_page.dart';
 import 'package:routing_app/widgets/tab_item.dart';
 
+import '../pages/color_details_page.dart';
+
 class TabNavigator extends StatelessWidget {
   const TabNavigator(
       {super.key, required this.navigatorKey, required this.tabItem});
@@ -20,6 +22,14 @@ class TabNavigator extends StatelessWidget {
               builder: (context) => ColorsListPage(
                 color: tabItem.color,
                 title: tabItem.name,
+              ),
+            );
+          case '/detail':
+            return MaterialPageRoute(
+              builder: (context) => ColorDetailPage(
+                color: tabItem.color,
+                title: tabItem.name,
+                materialIndex: routeSettings.arguments as int,
               ),
             );
         }

@@ -31,16 +31,11 @@ class ColorsListPage extends StatelessWidget {
                         style: const TextStyle(fontSize: 24.0)),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () async {
-                      final result = await Navigator.push(
+                      final result = await Navigator.pushNamed(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => ColorDetailPage(
-                            color: color,
-                            title: title,
-                            materialIndex: materialIndex,
-                          ),
-                        ),
-                      );
+                        '/detail',
+                        arguments: materialIndex,
+                      ) ?? 'Message not sent';
 
                       ScaffoldMessenger.of(context)
                         ..removeCurrentSnackBar()

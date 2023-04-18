@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_app/pages/locations_page.dart';
 import 'package:material_app/pages/settings_page.dart';
 import 'package:material_app/providers/forecast_provider.dart';
 import 'package:material_app/pages/forecast_page.dart';
@@ -10,7 +11,6 @@ import 'package:provider/provider.dart';
 import '../entities/forecast.dart';
 import '../providers/page_view_provider.dart';
 import '../widgets/glass_bottom_navigation_bar.dart';
-import 'forecast_day_page.dart';
 
 class HomePage extends StatelessWidget {
   final PageController _controller = PageController();
@@ -25,7 +25,6 @@ class HomePage extends StatelessWidget {
         Theme.of(context).primaryColorDark
       ],
       child: Scaffold(
-        extendBody: true,
         backgroundColor: Colors.transparent,
         appBar: GlassAppBar(
           title: Text('Weather', style: Theme.of(context).textTheme.titleLarge),
@@ -43,16 +42,16 @@ class HomePage extends StatelessWidget {
           ],
         ),
         body: SafeArea(
-          child: FutureBuilder(
+          child: FutureBuilder<List<Forecast>>(
             builder: (context, snapshot) {
-              Forecast forecast;
+              List<Forecast> forecasts;
               if (snapshot.hasError) {
                 return RefreshIndicator(
                   onRefresh: () async {
                     try {
-                      forecast = await Provider.of<ForecastProvider>(context,
+                      forecasts = await Provider.of<ForecastProvider>(context,
                               listen: false)
-                          .getForecast();
+                          .getForecasts({'Kyiv', 'Paris'});
                     } catch (e) {}
                   },
                   child: const CustomScrollView(
@@ -67,7 +66,7 @@ class HomePage extends StatelessWidget {
                   ),
                 );
               } else if (snapshot.hasData) {
-                forecast = snapshot.data as Forecast;
+                forecasts = snapshot.data as List<Forecast>;
                 return Consumer<PageViewProvider>(
                   builder: (context, model, child) => PageView(
                     controller: _controller,
@@ -75,10 +74,53 @@ class HomePage extends StatelessWidget {
                       model.currentIndex = value;
                     },
                     children: [
-                      ForecastDayPage(weather: forecast.days[0]),
-                      ChangeNotifierProvider<TabBarProvider>(
-                          create: (context) => TabBarProvider(),
-                          child: ForecastPage(forecast: forecast)),
+                      Navigator(
+                        key: model.navigatorKeys[0],
+                        initialRoute: '/',
+                        onGenerateRoute: (settings) {
+                          return MaterialPageRoute(
+                            builder: (context) =>
+                                ChangeNotifierProvider<TabBarProvider>(
+                              create: (context) => TabBarProvider(),
+                              child: ForecastPage(forecast: forecasts[0]),
+                            ),
+                          );
+                        },
+                      ),
+                      Navigator(
+                        key: model.navigatorKeys[1],
+                        initialRoute: '/',
+                        onGenerateRoute: (settings) {
+                          switch (settings.name) {
+                            case '/':
+                              return MaterialPageRoute(
+                                builder: (context) => LocationsPage(
+                                  locations:
+                                      forecasts.map((e) => e.location).toSet(),
+                                ),
+                              );
+                            case '/location':
+                              return MaterialPageRoute(
+                                builder: (context) => ChangeNotifierProvider<TabBarProvider>(
+                                  create: (context) => TabBarProvider(),
+                                  child: FutureBuilder<Forecast>(
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        return ForecastPage(
+                                            forecast: snapshot.data!);
+                                      } else {
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                    },
+                                    future: settings.arguments as Future<Forecast>
+                                  ),
+                                ),
+                              );
+                          }
+                        },
+                      ),
                     ],
                   ),
                 );
@@ -88,23 +130,29 @@ class HomePage extends StatelessWidget {
                 );
               }
             },
-            future: context.watch<ForecastProvider>().getForecast(),
+            future: context
+                .watch<ForecastProvider>()
+                .getForecasts({'Kyiv', 'Paris'}),
           ),
         ),
         bottomNavigationBar: Consumer<PageViewProvider>(
           builder: (context, model, child) => GlassBottomNavigationBar(
             currentIndex: model.currentIndex,
             onTap: (value) {
-              model.currentIndex = value;
-              _controller.animateToPage(value,
+              if(value != model.currentIndex) {
+                _controller.animateToPage(value,
                   duration: const Duration(milliseconds: 200),
-                  curve: Curves.easeIn);
+                  curve: Curves.easeIn); 
+              }
+              else {
+                model.currentIndex = value;
+              }
             },
             items: const [
               BottomNavigationBarItem(
-                  icon: Icon(Icons.today_rounded), label: 'Today'),
+                  icon: Icon(Icons.location_on_rounded), label: 'My location'),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.grid_on_rounded), label: 'Forecast'),
+                  icon: Icon(Icons.add_location_alt_sharp), label: 'Locations'),
             ],
           ),
         ),

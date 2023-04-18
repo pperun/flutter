@@ -12,11 +12,19 @@ class ForecastProvider {
 
   ForecastProvider(this.settingsProvider);
 
-  Future<Forecast> getForecast() async {
+  Future<Forecast> getForecast(String city) async {
     Settings settings = await settingsProvider.getSettings();
     return settings.get(SettingsValues.alwaysFromApi.value)!.isSet
-        ? getForecastFormApi()
-        : getForecastFromCache();
+        ? getForecastFormApi(city)
+        : getForecastFromCache(city);
+  }
+
+  Future<List<Forecast>> getForecasts(Set<String> locations) async {
+    List<Forecast> forecasts = [];
+    for(final location in locations) {
+      forecasts.add(await getForecast(location));
+    }
+    return forecasts;
   }
 
   Future<void> setAlwaysFromApi(bool isSet) async {
@@ -26,24 +34,24 @@ class ForecastProvider {
     });
   }
 
-  Future<Forecast> getForecastFormApi() async {
+  Future<Forecast> getForecastFormApi(String city) async {
     try {
-      return await WeatherApiClient.getForecast();
+      return await WeatherApiClient.getForecast(city);
     } catch (e) {
       return Future.error(e);
     }
   }
 
-  Future<Forecast> getForecastFromCache() async {
+  Future<Forecast> getForecastFromCache(String city) async {
     final sharedPreferences = await SharedPreferences.getInstance();
-    String? json = sharedPreferences.getString('forecast_cache');
+    String? json = sharedPreferences.getString('forecast_cache_$city');
     Forecast forecast;
 
     if (json == null) {
       try {
-        forecast = await WeatherApiClient.getForecast();
+        forecast = await WeatherApiClient.getForecast(city);
         json = jsonEncode(forecast.toJson());
-        sharedPreferences.setString('forecast_cache', json);
+        sharedPreferences.setString('forecast_cache_$city', json);
       } catch (e) {
         return Future.error(e);
       }
@@ -53,8 +61,8 @@ class ForecastProvider {
 
     if (DateTime.now().difference(forecast.lastUpdated).inHours > 1) {
       try {
-        forecast = await WeatherApiClient.getForecast();
-        sharedPreferences.setString('forecast_cache', jsonEncode(forecast.toJson()));
+        forecast = await WeatherApiClient.getForecast(city);
+        sharedPreferences.setString('forecast_cache_$city', jsonEncode(forecast.toJson()));
       } catch (e) {
         return Future.error(e);
       }

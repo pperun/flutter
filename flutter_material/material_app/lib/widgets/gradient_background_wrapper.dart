@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 
 class GradientBackgroundWrapper extends StatelessWidget {
-
   final Widget? child;
   final List<Color> colors;
-  
-  const GradientBackgroundWrapper({super.key, required this.colors, this.child});
-  
+  final BorderRadius borderRadius;
+
+  const GradientBackgroundWrapper(
+      {super.key,
+      required this.colors,
+      this.borderRadius = BorderRadius.zero,
+      this.child});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -16,6 +20,7 @@ class GradientBackgroundWrapper extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: colors,
         ),
+        borderRadius: borderRadius,
       ),
       child: child,
     );

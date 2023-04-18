@@ -1,9 +1,13 @@
-class Location {
-  final String city;
-  final String region;
-  final String country;
+import 'package:equatable/equatable.dart';
 
-  Location({required this.city, required this.region, required this.country});
+class Location with EquatableMixin {
+  late final String? city;
+  late final String? region;
+  late final String? country;
+
+  Location.empty();
+
+  Location({this.city, this.region, this.country});
 
   Location.fromJson(Map<String, dynamic> json)
       : city = json['name'],
@@ -11,5 +15,8 @@ class Location {
         country = json['country'];
 
   Map<String, dynamic> toJson() =>
-      {'name': city, 'region': region, 'country': country};
+      {'name': city ?? '', 'region': region ?? '', 'country': country ?? ''};
+
+  @override
+  List<Object?> get props => [city, region, country];
 }

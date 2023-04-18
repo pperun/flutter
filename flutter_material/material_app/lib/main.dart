@@ -41,13 +41,13 @@ class WeatherApp extends StatelessWidget {
               title: 'Weather',
               theme: snapshot.data! ? darkTheme : lightTheme,
               home: ChangeNotifierProvider<PageViewProvider>(
-                create: (context) => PageViewProvider(),
+                create: (context) => PageViewProvider(pages: 2),
                 child: HomePage(),
               ),
             );
           } else {
             return const GradientBackgroundWrapper(
-              colors: [Color(0xff1e90ff), Color(0xff1e90ff)],
+              colors: [Color(0xff78bcff), Color(0xff1564b2)],
             );
           }
         },
