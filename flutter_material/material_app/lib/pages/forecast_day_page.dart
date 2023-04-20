@@ -28,6 +28,7 @@ class ForecastDayPage extends StatelessWidget {
               create: (context) => FlippableProvider(),
               child: Consumer<FlippableProvider>(
                 builder: (context, value, child) => Flippable(
+                  axis: Axis.vertical,
                   frontSide: GlassWeatherMeteo(weather: weather.daySummary),
                   backSide: GlassWeatherAstro(astro: weather.astro),
                 ),

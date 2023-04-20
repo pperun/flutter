@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:material_app/providers/flippable_provider.dart';
 import 'package:provider/provider.dart';
+import 'dart:math' as math;
 
 class Flippable extends StatelessWidget {
+  final Axis axis;
   final Widget frontSide;
   final Widget backSide;
 
   const Flippable(
-      {super.key, required this.frontSide, required this.backSide});
+      {super.key,
+      required this.frontSide,
+      required this.backSide,
+      this.axis = Axis.horizontal});
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +20,32 @@ class Flippable extends StatelessWidget {
       borderRadius: const BorderRadius.all(Radius.circular(10)),
       onTap: () => context.read<FlippableProvider>().flip(),
       child: AnimatedSize(
+        curve: Curves.easeIn,
         duration: const Duration(milliseconds: 200),
         child: AnimatedSwitcher(
+          switchInCurve: Curves.easeIn,
+          switchOutCurve: Curves.easeIn.flipped,
+          transitionBuilder: (child, animation) {
+            final rotationAnimation =
+                Tween<double>(begin: math.pi, end: 0.0).animate(animation);
+            return AnimatedBuilder(
+                animation: rotationAnimation,
+                child: child,
+                builder: (context, child) {
+                  return Transform(
+                      transform: axis == Axis.horizontal
+                          ? Matrix4.rotationY(rotationAnimation.value)
+                          : Matrix4.rotationX(rotationAnimation.value),
+                      alignment: Alignment.center,
+                      child: rotationAnimation.value <= math.pi / 2
+                          ? child
+                          : Container());
+                });
+          },
           duration: const Duration(milliseconds: 200),
-          child: context.watch<FlippableProvider>().side == Side.front ? frontSide : backSide,
+          child: context.watch<FlippableProvider>().side == Side.front
+              ? frontSide
+              : backSide,
         ),
       ),
     );
