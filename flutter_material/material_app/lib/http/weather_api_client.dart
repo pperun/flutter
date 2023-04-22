@@ -5,7 +5,7 @@ import 'package:material_app/entities/forecast.dart';
 import 'package:http/http.dart' as http;
 
 class WeatherApiClient {
-  static const String apiKey = '';
+  static const String apiKey = '1443005cf85645e6bf9175801232802';
 
   static Forecast parseJson(String responseBody) =>
       Forecast.fromJson(jsonDecode(responseBody));

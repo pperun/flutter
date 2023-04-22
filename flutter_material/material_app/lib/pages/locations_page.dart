@@ -2,26 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:material_app/entities/location_search_suggestion.dart';
 import 'package:material_app/http/places_api_client.dart';
 import 'package:material_app/providers/forecast_provider.dart';
+import 'package:material_app/widgets/delayed_slide_transition.dart';
 import 'package:material_app/widgets/gradient_background_wrapper.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../entities/location.dart';
+import '../providers/locations_provider.dart';
 import '../widgets/glass_panel.dart';
 
 class LocationsPage extends StatefulWidget {
-  final Set<Location> locations;
-
-  const LocationsPage({super.key, this.locations = const {}});
+  const LocationsPage({super.key});
 
   @override
   State<StatefulWidget> createState() => LocationsPageState();
 }
 
-class LocationsPageState extends State<LocationsPage> with AutomaticKeepAliveClientMixin<LocationsPage>{
+class LocationsPageState extends State<LocationsPage> {
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Column(
       children: [
         Autocomplete<LocationSearchSuggestion>(
@@ -43,9 +42,9 @@ class LocationsPageState extends State<LocationsPage> with AutomaticKeepAliveCli
             Location location = await PlacesApiClient(sessionToken)
                 .getPlaceDetailFromId(option.placeId);
 
-            setState(() {
-              widget.locations.add(location);
-            });
+            if (mounted) {
+              context.read<LocationsProvider>().addLocation(location);
+            }
           },
           fieldViewBuilder:
               (context, textEditingController, focusNode, onFieldSubmitted) {
@@ -118,41 +117,62 @@ class LocationsPageState extends State<LocationsPage> with AutomaticKeepAliveCli
             );
           },
         ),
-        Flexible(
-          child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            separatorBuilder: (context, index) => const SizedBox(
-              height: 10,
-            ),
-            itemCount: widget.locations.length,
-            itemBuilder: ((context, index) {
-              return InkWell(
-                onTap: () async {
-                  await Navigator.pushNamed(
-                    context,
-                    '/location',
-                    arguments: Provider.of<ForecastProvider>(context, listen: false)
-                        .getForecast(widget.locations.elementAt(index).city!),
-                  );
-                },
-                child: GlassPanel(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Column(
-                    children: [
-                      Text(widget.locations.elementAt(index).city ?? ''),
-                      Text(widget.locations.elementAt(index).region ?? ''),
-                      Text(widget.locations.elementAt(index).country ?? ''),
-                    ],
+        FutureBuilder(
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Flexible(
+                child: ListView.separated(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  separatorBuilder: (context, index) => const SizedBox(
+                    height: 10,
                   ),
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: ((context, index) {
+                    return DelayedSlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0.0, -1.0),
+                        end: const Offset(0.0, 0.0),
+                      ),
+                      delay:
+                          Duration(milliseconds: 600 ~/ (index + 1) * index),
+                      duration: Duration(milliseconds: 400 ~/ (index + 1)),
+                      child: InkWell(
+                        onTap: () async {
+                          await Navigator.pushNamed(
+                            context,
+                            '/location',
+                            arguments: Provider.of<ForecastProvider>(context,
+                                    listen: false)
+                                .getForecast(
+                                    snapshot.data!.elementAt(index).city!),
+                          );
+                        },
+                        child: GlassPanel(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Column(
+                            children: [
+                              Text(snapshot.data!.elementAt(index).city ?? ''),
+                              Text(
+                                  snapshot.data!.elementAt(index).region ?? ''),
+                              Text(snapshot.data!.elementAt(index).country ??
+                                  ''),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
                 ),
               );
-            }),
-          ),
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
+          future: context.watch<LocationsProvider>().getLocationsFromCache(),
         ),
       ],
     );
   }
-  
-  @override
-  bool get wantKeepAlive => true;
 }

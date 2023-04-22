@@ -21,7 +21,7 @@ class Flippable extends StatelessWidget {
       onTap: () => context.read<FlippableProvider>().flip(),
       child: AnimatedSize(
         curve: Curves.easeIn,
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 300),
         child: AnimatedSwitcher(
           switchInCurve: Curves.easeIn,
           switchOutCurve: Curves.easeIn.flipped,
@@ -42,7 +42,7 @@ class Flippable extends StatelessWidget {
                           : Container());
                 });
           },
-          duration: const Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 300),
           child: context.watch<FlippableProvider>().side == Side.front
               ? frontSide
               : backSide,

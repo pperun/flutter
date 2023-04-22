@@ -42,7 +42,7 @@ class WeatherApp extends StatelessWidget {
               theme: snapshot.data! ? darkTheme : lightTheme,
               home: ChangeNotifierProvider<PageViewProvider>(
                 create: (context) => PageViewProvider(pages: 2),
-                child: HomePage(),
+                child: const HomePage(),
               ),
             );
           } else {

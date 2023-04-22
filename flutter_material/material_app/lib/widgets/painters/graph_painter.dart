@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 
 
 class GraphPainter extends CustomPainter {
+  final Animation<double> animation;
   final Color color;
   final List<double> data;
   BuildContext context;
 
   GraphPainter(
-      {this.color = Colors.black, required this.data, required this.context});
+      {required this.animation, this.color = Colors.black, required this.data, required this.context}) : super(repaint: animation);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -27,7 +28,7 @@ class GraphPainter extends CustomPainter {
       canvas.drawRRect(
           RRect.fromRectAndRadius(
             Rect.fromLTWH((segmentWidth + 1) * i, size.height, segmentWidth,
-                -(size.height * normalizedData[i])),
+                -(size.height * normalizedData[i] * animation.value)),
             const Radius.circular(4),
           ),
           paint);
@@ -73,6 +74,6 @@ class GraphPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+    return true;
   }
 }

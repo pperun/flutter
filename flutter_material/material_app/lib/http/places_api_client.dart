@@ -10,7 +10,7 @@ class PlacesApiClient {
 
   final String sessionToken;
 
-  static const String apiKey = '';
+  static const String apiKey = 'AIzaSyB1Dcyel0jz3wuCZj5XDNFXAKW1dbxfmOE';
 
   Future<List<LocationSearchSuggestion>> fetchSuggestions(
       String input, String lang) async {
