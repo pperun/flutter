@@ -10,11 +10,11 @@ class MovieSession {
   MovieSession(this.id, this.date, this.type, this.minPrice, this.room);
 
   MovieSession.fromJson(Map<String, dynamic> json)
-      : id = json['data']['id'],
-        date = DateTime.fromMillisecondsSinceEpoch(json['data']['date']),
-        type = json['data']['type'],
-        minPrice = double.tryParse(json['data']['minPrice']) ?? 0.0,
-        room = Room.fromJson(json['data']['room']);
+      : id = json['id'],
+        date = DateTime.fromMillisecondsSinceEpoch(json['date'] * 1000),
+        type = json['type'],
+        minPrice = double.tryParse(json['minPrice'].toString()) ?? 0.0,
+        room = Room.fromJson(json['room']);
 
   Map<String, dynamic> toJson() => {
         'id': id,

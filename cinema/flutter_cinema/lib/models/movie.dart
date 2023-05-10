@@ -1,7 +1,7 @@
 class Movie {
   final int id;
   final String name;
-  final String age;
+  final int age;
   final String trailer;
   final String image;
   final String smallImage;
@@ -9,7 +9,7 @@ class Movie {
   final Duration duration;
   final String language;
   final double rating;
-  final DateTime year;
+  final int year;
   final String country;
   final String genre;
   final String plot;
@@ -39,24 +39,24 @@ class Movie {
       this.studio);
 
   Movie.fromJson(Map<String, dynamic> json)
-      : id = json['data']['id'],
-        name = json['data']['name'],
-        age = json['data']['age'],
-        trailer = json['data']['trailer'],
-        image = json['data']['image'],
-        smallImage = json['data']['smallImage'],
-        originalName = json['data']['originalName'],
-        duration = Duration(minutes: json['data']['duration']),
-        language = json['data']['language'],
-        rating = json['data']['rating'],
-        year = json['data']['year'],
-        country = json['data']['country'],
-        genre = json['data']['genre'],
-        plot = json['data']['plot'],
-        starring = json['data']['starring'],
-        director = json['data']['director'],
-        screenWriter = json['data']['screenWriter'],
-        studio = json['data']['studio'];
+      : id = json['id'],
+        name = json['name'],
+        age = json['age'],
+        trailer = json['trailer'],
+        image = json['image'],
+        smallImage = json['smallImage'],
+        originalName = json['originalName'],
+        duration = Duration(minutes: json['duration']),
+        language = json['language'],
+        rating = double.tryParse(json['rating']) ?? 0.0,
+        year = json['year'],
+        country = json['country'],
+        genre = json['genre'],
+        plot = json['plot'],
+        starring = json['starring'],
+        director = json['director'],
+        screenWriter = json['screenwriter'],
+        studio = json['studio'];
 
   Map<String, dynamic> toJson() => {
         'id': id,

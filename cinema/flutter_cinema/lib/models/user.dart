@@ -1,7 +1,7 @@
 class User {
   final int id;
-  final String name;
-  final String phoneNumber;
+  final String? name;
+  final String? phoneNumber;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -14,20 +14,20 @@ class User {
   );
 
   User.fromJson(Map<String, dynamic> json)
-      : id = json['data']['id'],
-        name = json['data']['name'],
-        phoneNumber = json['data']['phoneNumber'],
+      : id = json['id'] ?? '',
+        name = json['name'] ?? '',
+        phoneNumber = json['phoneNumber'],
         createdAt = DateTime.fromMillisecondsSinceEpoch(
-          json['data']['createdAt'],
+          json['createdAt'],
         ),
         updatedAt = DateTime.fromMicrosecondsSinceEpoch(
-          json['data']['updatedAt'],
+          json['updatedAt'],
         );
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'name': name,
-        'phoneNumber': phoneNumber,
+        'name': name ?? '',
+        'phoneNumber': phoneNumber ?? '',
         'createdAt': createdAt.millisecondsSinceEpoch,
         'updatedAt': updatedAt.millisecondsSinceEpoch,
       };

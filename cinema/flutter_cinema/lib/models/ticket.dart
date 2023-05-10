@@ -16,14 +16,14 @@ class Ticket {
   );
 
   Ticket.fromJson(Map<String, dynamic> json)
-      : id = json['data']['id'],
-        movieId = json['data']['movieId'],
-        name = json['data']['name'],
+      : id = json['id'],
+        movieId = json['movieId'],
+        name = json['name'],
         date = DateTime.fromMillisecondsSinceEpoch(
-          json['data']['date'],
+          json['date'] * 1000,
         ),
-        image = json['data']['image'],
-        smallImage = json['data']['smallImage'];
+        image = json['image'],
+        smallImage = json['smallImage'];
 
   Map<String, dynamic> toJSon() => {
         'id': id,
